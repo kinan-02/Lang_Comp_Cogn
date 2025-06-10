@@ -1,0 +1,52 @@
+Preprocessing:
+    For preprocessing the data, and removing the outliers, we chose to work with the values between lower and upper bound of the box plots (Reading Time Measure), while we exclude the values
+    not in this interval.
+
+
+Interpretation for the First and Second Parts:
+    Trigram:
+            The trigram surprisal is moderately predictive of reading time. The relationship is statistically strong and accounts for a meaningful portion of the variability.
+    Pythia:
+            Although the relationship is statistically significant due to large sample size, the explanatory power is extremely low. It almost does not predict reading time.
+
+    Visual Confirmation:
+        The trigram plot shows a clear upward trend, especially in the binned version, supporting the higher slope and R².
+        This suggests that trigram surprisal correlates reasonably well with human reading time behavior, especially in the lower-to-mid surprisal range (0–15).
+        The Pythia plot is flatter and noisier, even in the binned version — indicating very weak correlation.
+
+    Disagree?
+        Low-to-Mid Surprisal (0–15):
+            Trigram: Strong gradient in the slope — as surprisal increases, dwell time increases fairly consistently.
+            Pythia: Barely any increase — model does not show much sensitivity to surprisal in this range.
+            Trigram believes these values are surprising enough to affect reading time; Pythia does not.
+
+        High Surprisal (15+):
+            Trigram: Data becomes sparse and noisy but still continues the trend of increasing reading time.
+            Pythia: Also sparse here, but has even weaker signal, with many high-surprisal tokens not associated with higher reading time.
+            Even more pronounced — trigram maintains correlation, Pythia seems to flatten out.
+
+    Conclusion:
+        Trigram and Pythia assign very different surprisal values, particularly across the low-to-mid range, where human behavior is most sensitive.
+        This may suggest that Pythia’s internal language model predictions are smoother or more uncertain, while trigram makes sharper predictions — which might better reflect what humans find unexpected in basic syntax and semantics.
+
+
+Interpretation for the Thrid Part:
+    We got a huge difference for the word: "for" in the paragraph: "The Japanese team is believed to be considering three names for ununtrium: japonium, rikenium and nishinarium, after the Nishina Center for Accelerator-Based Science, where the element was found. …"
+    we think this disagreement caused by frequency of the word with it's context, and the large-context and semantics. What we mean is that "three names for" may appear in many corpora, so the trigram give it a high probability, while the neural model give it a low probability
+    because it saw the whole context which include some words that will is not frequent like: japonium, rikenium and nishinarium. That's why it get the high surprisal (low probability).
+
+
+Interpretation for the Fourth Part:
+    Trigram:
+        Current word probability has a clear and expected effect: higher probability = faster reading.
+        Next word effect is reversed and tiny: this might be noise or reflect a tiny processing delay when an easy word precedes a harder one.
+        The shape is different: negative for current, slightly positive for next -> suggests the main surprisal effect happens at the word itself for Trigram.
+
+    Pythia:
+        The effect remains negative — i.e., more probable words are followed by shorter reading times, even at the next word.
+        The spillover effect is smaller, about 1/3 the size of the current-word effect.
+        So, it’s similar in direction, but weaker in magnitude, and has even lower explanatory power.
+
+    Are the spillover effects different across the two models?
+    Yes, it's different across the two models, especially in the next word effect (spillover effect), which we got two different slopes (in direction), and the magnitudes were different too (even in the same model with different word).
+    Pythia shows more coherent spillover behavior, suggesting that its representations capture processing cost over time more accurately than the trigram model.
