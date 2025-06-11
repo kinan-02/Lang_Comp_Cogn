@@ -1,0 +1,154 @@
+Preprocessing:
+    For preprocessing the data, and removing the outliers, we chose to work with the values between lower and upper bound of the box plots (Reading Time Measure), while we exclude the values
+    not in this interval.
+
+Task 1:
+Interpretation for the First and Second Parts:
+    Trigram:
+            The trigram surprisal is moderately predictive of reading time. The relationship is statistically strong and accounts for a meaningful portion of the variability.
+    Pythia:
+            Although the relationship is statistically significant due to large sample size, the explanatory power is extremely low. It almost does not predict reading time.
+
+    Visual Confirmation:
+        The trigram plot shows a clear upward trend, especially in the binned version, supporting the higher slope and R².
+        This suggests that trigram surprisal correlates reasonably well with human reading time behavior, especially in the lower-to-mid surprisal range (0–15).
+        The Pythia plot is flatter and noisier, even in the binned version — indicating very weak correlation.
+
+    Disagree?
+        Low-to-Mid Surprisal (0–15):
+            Trigram: Strong gradient in the slope — as surprisal increases, dwell time increases fairly consistently.
+            Pythia: Barely any increase — model does not show much sensitivity to surprisal in this range.
+            Trigram believes these values are surprising enough to affect reading time; Pythia does not.
+
+        High Surprisal (15+):
+            Trigram: Data becomes sparse and noisy but still continues the trend of increasing reading time.
+            Pythia: Also sparse here, but has even weaker signal, with many high-surprisal tokens not associated with higher reading time.
+            Even more pronounced — trigram maintains correlation, Pythia seems to flatten out.
+
+    Conclusion:
+        Trigram and Pythia assign very different surprisal values, particularly across the low-to-mid range, where human behavior is most sensitive.
+        This may suggest that Pythia’s internal language model predictions are smoother or more uncertain, while trigram makes sharper predictions — which might better reflect what humans find unexpected in basic syntax and semantics.
+
+
+Interpretation for the Thrid Part:
+    We got a huge difference for the word: "for" in the paragraph: "The Japanese team is believed to be considering three names for ununtrium: japonium, rikenium and nishinarium, after the Nishina Center for Accelerator-Based Science, where the element was found. …"
+    we think this disagreement caused by frequency of the word with it's context, and the large-context and semantics. What we mean is that "three names for" may appear in many corpora, so the trigram give it a high probability, while the neural model give it a low probability
+    because it saw the whole context which include some words that will is not frequent like: japonium, rikenium and nishinarium. That's why it get the high surprisal (low probability).
+
+
+Interpretation for the Fourth Part:
+    Trigram:
+        Current word probability has a clear and expected effect: higher probability = faster reading.
+        Next word effect is reversed and tiny: this might be noise or reflect a tiny processing delay when an easy word precedes a harder one.
+        The shape is different: negative for current, slightly positive for next -> suggests the main surprisal effect happens at the word itself for Trigram.
+
+    Pythia:
+        The effect remains negative — i.e., more probable words are followed by shorter reading times, even at the next word.
+        The spillover effect is smaller, about 1/3 the size of the current-word effect.
+        So, it’s similar in direction, but weaker in magnitude, and has even lower explanatory power.
+
+    Are the spillover effects different across the two models?
+    Yes, it's different across the two models, especially in the next word effect (spillover effect), which we got two different slopes (in direction), and the magnitudes were different too (even in the same model with different word).
+    Pythia shows more coherent spillover behavior, suggesting that its representations capture processing cost over time more accurately than the trigram model.
+
+Task 2:
+Total Fixation Duration (IA DWELL TIME):
+    Current Word Effects:
+        Pythia Surprisal:
+            Highly significant (p < 0.0001), with a positive effect (1.0890): higher surprisal leads to longer fixation durations.
+		    Matches expectations: more surprising words take longer to process.
+
+		Pythia Word Probability:
+		    Also significant (p < 0.0001), with a negative effect (-15.74): lower-probability words (i.e. more surprising) increase reading time.
+
+		Control Variables: (p < 0.0001)
+		    Word Length: strong positive effect (24.23).
+		    Log Frequency: moderate positive effect (4.91), surprisingly, more frequent words are associated with slightly longer dwell time.
+
+		R² almost 0.133 — surprisal, word length, and frequency together explain ~13.3% of the variance in fixation duration.
+
+	Spillover Effect:
+	    Pythia Word Probability:
+	        Significant (-11.73) but much weaker effect than for the current word.
+	        Surprising words slightly affect the reading time of the next word.
+
+        Control Variables: (p < 0.0001)
+            Word Length: Surprisingly (-5.72), longer next words are associated with slightly shorter dwell times.
+            Log Frequency: More frequent next words are read slightly faster, as expected. (-0.87)
+
+        R² almost 0.007 — very low, most of the variability in next-word dwell time is not explained by surprisal of the prior word.
+
+Gaze Duration (IA_FIRST_RUN_DWELL_TIME):
+    Current Word Effects:
+        Pythia Surprisal:
+            Highly significant (p < 0.0001), with a small positive effect (0.16): higher surprisal leads to longer gaze durations.
+            Matches expectations: words that are more surprising tend to increase the gaze duration slightly.
+
+        Pythia Word Probability:
+            Statistically significant (p = 0.0046), with a negative effect (-1.98):  Less probable (more surprising) words increase gaze duration.
+
+        Control Variables: (p < 0.0001)
+            Word Length: As expected (4.33), as longer words take more time to process.
+            Log Frequency: Surprisingly (1.84), more frequent words are associated with slightly longer gaze durations.
+
+        R² almost 0.0318 — The model explains about 3.2% of variance in gaze duration (lower than total fixation duration).
+
+    Spillover Effect:
+	    Pythia Word Probability:
+	        Highly significant (p < 0.0001).
+	        Stronger effect (–22.55) than in total fixation — low-probability words substantially slow down reading of the next word.
+
+	    Control Variables: (p < 0.0001)
+	        Word Length: Longer next words slightly increase gaze time. (0.64)
+	        Log Frequency: More frequent words slightly increase spillover time. (0.62)
+
+	    R² almost 0.0039 — Model explains just under 0.4% of variance.
+
+First Fixation Duration (IA_FIRST_FIXATION_DURATION):
+    Current Word Effects:
+        Pythia Surprisal:
+            Not significant (p = 0.926), no detectable effect of surprisal on the first fixation duration.
+            Almost a constant line (-0.0019).
+
+        Pythia Word Probability:
+            Not significant (p = 0.825), no significant relationship between probability and reading time.
+            Again, almost a constant line. (0.11)
+
+        Control Variables:
+            Word Length: Significant (p = 0.0215), longer words have slightly shorter first fixations. (very small effect -0.11)
+	        Log Frequency: Highly significant (p < 0.0001), more frequent words result in slightly longer first fixations. (very small effect 0.96)
+
+	    R² almost 0.0037 — the model explains <0.4% of the variance.
+
+	Spillover Effect:
+	    Pythia Word Probability:
+	        Highly significant (p < 0.0001).
+	        Words with low probability (high surprisal) slightly increase the next word’s first fixation time. (-8.5773)
+
+	    Control Variables: (p < 0.0001):
+	        Word Length: As expected, longer next words result in longer fixations. (small effect 0.7067)
+	        Log Frequency: Surprisingly, more frequent next words slightly increase fixation time. (small effect too 0.3678)
+
+	    R² almost 0.0025 — very small effect size; surprisal of the prior word explains only a tiny portion of next-word fixation time.
+
+Shared Patterns Across All Measures:
+    Word Length: Always a significant predictor.
+        Positive in gaze and total fixation — longer words take longer to process.
+        Slightly negative or weak in first fixation — possible skimming or early fast-glancing effect.
+
+    Log Frequency: Consistently positive coefficient.
+        Counter to common expectations (frequent words are usually processed faster), suggesting possible corpus-specific or contextual confounds.
+
+    Spillover:
+        Magnitude varies, but surprisal from the previous word does impact early reading time on the next word, particularly for gaze duration.
+
+Key Differences:
+    Surprisal Sensitivity: Strongest in total fixation and gaze duration, but nonexistent in first fixation.
+    Effect Sizes: Large coefficients for total fixation (1.09), moderate for gaze (0.16), negligible for first fixation (–0.002).
+    Spillover Strength: Highest in gaze duration (–22.55 ms), readers may need time to integrate unexpected words, affecting downstream processing.
+    R²: Highest for total fixation (~13%), followed by gaze (~3%), then first fixation (~0.4%). Suggests different measures capture increasingly higher-level processing.
+
+
+
+
+
