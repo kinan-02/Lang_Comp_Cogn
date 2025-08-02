@@ -128,3 +128,11 @@ if __name__ == "__main__":
     # Harmonize Polysemy Count
     df['polysemy_count'] = df['WORD_NORM'].apply(get_polysemy_count)
     df.to_csv('../data/data_with_polysemy.csv', index=False)
+
+    df = pd.read_csv("../data/data_with_polysemy.csv")
+    metadata = pd.read_csv("../data/celer/metadata.tsv", sep='\t')
+    df["DATA_FILE"] = df["DATA_FILE"].str.replace(".edf", "", regex=False)
+    merged_df = df.merge(metadata[['ID', 'L1']], left_on='DATA_FILE', right_on='ID', how='inner')
+    merged_df['Native English'] = (merged_df['L1'] == 'English').astype(int)
+    merged_df = merged_df.drop(columns=['L1', 'ID'])
+    merged_df.to_csv('../data/data_with_polysemy.csv', index=False)
